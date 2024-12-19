@@ -1,4 +1,5 @@
 from enum import StrEnum
+import time
 from typing import Any, Dict, List
 import requests
 
@@ -53,8 +54,13 @@ def construct_search_url(
     return url
 
 
-def get_publications(name: str) -> List[Dict[str, Any]]:
-    author = search_dblp(query=name, search_type=SearchType.AUTHOR)[0]
+def get_publications(name: str, sleep_duration: int = 1) -> List[Dict[str, Any]]:
+    author = search_dblp(
+        query=name, 
+        search_type=SearchType.AUTHOR,
+        max_completion_terms=10,
+    )[0]
+    time.sleep(sleep_duration)
     url = f"{author["info"]["url"]}.xml"
     data = xmltodict.parse(requests.get(url).text)
     # publications are wrapped in a dictionary like
