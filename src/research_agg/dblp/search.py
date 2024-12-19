@@ -1,6 +1,8 @@
 from enum import StrEnum
-from typing import List
+from typing import Any, Dict, List
 import requests
+
+import xmltodict
 
 
 class SearchType(StrEnum):
@@ -49,3 +51,13 @@ def construct_search_url(
     query = "+".join(query_terms)
     url = f"{search_type.value}?q={query}&format={format.value}&c={max_completion_terms}&h={max_results}"
     return url
+
+
+def get_publications(name: str) -> List[Dict[str, Any]]:
+    author = search_dblp(query=name, search_type=SearchType.AUTHOR)[0]
+    url = f"{author["info"]["url"]}.xml"
+    data = xmltodict.parse(requests.get(url).text)
+    # publications are wrapped in a dictionary like
+    # {"inproceedings": {<content>}} or {"article": {<content>}}
+    publications = [tuple(p.values())[0] for p in data["dblpperson"]["r"]]
+    return publications

@@ -14,7 +14,7 @@ def filter_publication_by_year(
     max_year: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
     def filter_fn(r: Dict[str, Any]) -> bool:
-        year = int(r["info"]["year"])
+        year = int(r["year"])
         return (min_year is None or year >= min_year) and (max_year is None or year <= max_year)
 
     return filter_results(results, filter_fn=filter_fn)

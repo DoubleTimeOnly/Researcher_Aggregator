@@ -9,6 +9,8 @@ version = "0.0"
 dependencies = [
     "pytest",
     "requests",
+    "pandas",
+    "xmltodict",
 ]
 
 [tool.setuptools.packages.find]
