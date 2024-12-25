@@ -6,6 +6,10 @@ import requests
 import xmltodict
 
 
+class AuthorDoesNotExistError(Exception):
+    pass
+
+
 class SearchType(StrEnum):
     PUBLICATION= "https://dblp.org/search/publ/api"
     AUTHOR= "https://dblp.org/search/author/api"
@@ -39,7 +43,13 @@ def search_dblp(
         max_completion_terms=max_completion_terms,
     )
     response = requests.get(url)
-    return response.json()["result"]["hits"]["hit"]
+    if response.status_code == 429:
+        raise ConnectionError(f"Request rejected due to too many requests")
+    else:
+        hits = response.json()["result"]["hits"]
+        if int(hits["@total"]) == 0:
+            raise AuthorDoesNotExistError(f"Could not find results for author {query} in dblp")
+        return hits["hit"]
 
 
 def construct_search_url(
@@ -55,6 +65,16 @@ def construct_search_url(
 
 
 def get_publications(name: str, sleep_duration: int = 1) -> List[Dict[str, Any]]:
+    data = get_dblp_publication_response(name=name, sleep_duration=sleep_duration)
+    # publications are wrapped in a dictionary like
+    # {"inproceedings": {<content>}} or {"article": {<content>}}
+    results = data["dblpperson"]["r"]
+    results = results if isinstance(results, list) else [results]
+    publications = [tuple(p.values())[0] for p in results]
+    return publications
+
+
+def get_dblp_publication_response(name: str, sleep_duration: int = 1) -> List[Dict[str, Any]]:
     author = search_dblp(
         query=name, 
         search_type=SearchType.AUTHOR,
@@ -62,8 +82,9 @@ def get_publications(name: str, sleep_duration: int = 1) -> List[Dict[str, Any]]
     )[0]
     time.sleep(sleep_duration)
     url = f"{author["info"]["url"]}.xml"
-    data = xmltodict.parse(requests.get(url).text)
-    # publications are wrapped in a dictionary like
-    # {"inproceedings": {<content>}} or {"article": {<content>}}
-    publications = [tuple(p.values())[0] for p in data["dblpperson"]["r"]]
-    return publications
+
+    author_reponse = requests.get(url)
+    if author_reponse.status_code == 429:
+        raise ConnectionError("Too many requests")
+    data = xmltodict.parse(author_reponse.text)
+    return data

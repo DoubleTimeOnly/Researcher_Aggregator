@@ -4,6 +4,8 @@ from .tags import TAG_LUT
 
 
 def tag_title(title: str) -> List[str]:
+    if isinstance(title, dict):
+        title = title["#text"]
     tags = set()
     title = title.lower()
     for cat, keywords in TAG_LUT.items():
