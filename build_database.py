@@ -9,8 +9,19 @@ if __name__ == "__main__":
     base_path = Path(r"C:\Users\Victor\Documents\Projects\Researcher_Aggregator\CSrankings")
     output_dir = Path(r"C:\Users\Victor\Documents\Projects\Researcher_Aggregator\cached_db")
     alphabet = "abcdefghijklmnopqrstuvwxyz"
-    alphabet = "klmnopqrstuvwxyz"
-    affiliation_whitelist = ["Carnegie Mellon University"]
+    affiliation_whitelist = [
+        "Carnegie Mellon University",
+        "Univ. of California - Berkeley",
+        "Univ. of California - San Diego",
+        "Univ. of Illinois at Urbana-Champaign",
+        "Massachusetts Institute of Technology",
+        "Stanford University",
+        "University of Maryland - College Park",
+        "Cornell University",
+        "Stony Brook University",
+        "Georgia Institute of Technology",
+        "University of Massachusetts Amherst",
+    ]
     for letter in alphabet:
         csv_path = base_path / f"csrankings-{letter}.csv"
         assert csv_path.exists()

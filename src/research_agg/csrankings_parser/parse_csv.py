@@ -71,7 +71,7 @@ def save_csranking_responses(
         name = clean_name(name)
         try:
             publications = get_publications(name, sleep_duration=sleep_duration)
-            publication_results[name] = publications
+            publication_results[name] = dict(affiliation=affiliation, publications=publications)
             # save responses
             output_path = output_dir / f"{csv_dir.stem}.json" 
             with open(output_path, "w") as file:
