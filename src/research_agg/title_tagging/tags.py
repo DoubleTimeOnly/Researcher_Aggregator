@@ -10,5 +10,6 @@ TAG_LUT = {
     "segmentation": {"segmentation"},
     "classification": {"classification"},
     "distillation": {"distillation"},
-    "real time": {"real time"}
+    "real time": {"real time"},
+    "nlp": {"nlp"},
 }

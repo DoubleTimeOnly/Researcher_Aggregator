@@ -53,7 +53,7 @@ def parse_csrankings_csvs(
 
 def save_csranking_responses(
     csv_dir: Path,
-    output_dir: Path,
+    output_path: Path,
     author_filter_fn: Callable = get_default_filter_fn(),
     publication_filter_fn: Callable = get_default_filter_fn(),
     sleep_duration: int = 1,
@@ -73,7 +73,6 @@ def save_csranking_responses(
             publications = get_publications(name, sleep_duration=sleep_duration)
             publication_results[name] = dict(affiliation=affiliation, publications=publications)
             # save responses
-            output_path = output_dir / f"{csv_dir.stem}.json" 
             with open(output_path, "w") as file:
                 json.dump(publication_results, file, indent=4)
             pbar.increment()
