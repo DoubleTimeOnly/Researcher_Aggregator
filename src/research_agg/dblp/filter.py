@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 
 def filter_results(
@@ -36,3 +36,16 @@ def get_affiliation_filter_fn(
         return affiliation in whitelist and affiliation not in blacklist
     return filter_fn
     
+
+def filter_publication_by_year_and_conference(
+    results: List[Dict[str, Any]], 
+    conferences: Tuple[str] = tuple(),
+    min_year: Optional[int] = None, 
+    max_year: Optional[int] = None,
+) -> List[Dict[str, Any]]:
+    results = filter_publication_by_year(results, min_year=min_year, max_year=max_year)
+    def filter_conference(r):
+        booktitle = r.get("booktitle", "")[:4].lower()
+        return booktitle.startswith(conferences)
+    results = filter_results(results, filter_fn=filter_conference)
+    return results

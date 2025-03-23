@@ -12,4 +12,7 @@ TAG_LUT = {
     "distillation": {"distillation"},
     "real time": {"real time"},
     "nlp": {"nlp"},
+    "reinforcement learning": {"reinforcement learning", "policy"},
+    "robotics": {"robot"},
+    "planning": {"planning", "planner"}
 }
